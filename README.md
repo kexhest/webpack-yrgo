@@ -412,7 +412,7 @@ Vi säger till babel att bara använda HRM i development.
 Sen uppdaterar vi vår webpack config för att inte inkludera hot reloading i produktion. Vi extraherar all css till en egen fil samt lägger till hashning på både javascript och css. Kanske den viktigaste delen i den nya konfigurationen är webpack.DefinePlugin, denna skickar vidare vår env variabel in till våra script, detta gör att react byggs för produktion och ger oss en env variabel att förhålla oss till i vår egen kod.
 
 webpack.config.js
-```
+```javascript
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -484,7 +484,7 @@ Eftersom vår index.js just nu inkluderar en del hotreloading kod så måste vi 
 Sen uppdaterar vi entry.js till att inkludera riktig index fil beroende på env variabeln som vi definierade i webpack.DefinePlugin.
 
 entry.js
-```
+```javascript
 if (process.env.NODE_ENV === 'development') {
   require('./scripts/index.dev');
 } else {
@@ -495,7 +495,7 @@ if (process.env.NODE_ENV === 'development') {
 index.dev.js (kopia av index.js från dev setupen)
 
 index.prod.js
-```
+```javascript
 import React from 'react';
 import { render } from 'react-dom';
 
@@ -515,7 +515,7 @@ Vi lägger till compression som är ett express paket för att gzippa assets.
 Sen skapar vi en server.prod.js och en server.dev.js och ändrar dem till följande:
 
 index.js
-```
+```javascript
 const path = require('path');
 const http = require('http');
 const express = require('express');
@@ -542,7 +542,7 @@ server.listen(port, err => {
 ```
 
 server.dev.js
-```
+```javascript
 const path = require('path');
 
 const webpack = require('webpack');
@@ -574,7 +574,7 @@ module.exports = (app, root) => {
 ```
 
 server.prod.js
-```
+```javascript
 const express = require('express');
 const compression = require('compression');
 
@@ -598,7 +598,7 @@ module.exports = (app, root) => {
 Till slut uppdaterar vi vår package.json med ett script för att starta servern i produktion.
 
 package.json
-```
+```json
 "scripts": {
   "start": "NODE_ENV=production node server",
   "dev": "NODE_ENV=development node server",
