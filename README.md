@@ -124,8 +124,6 @@ module.exports = {
 };
 ```
 
-*Uppgift: Lägg till [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin) och sass support med [sass-loader](https://github.com/webpack-contrib/sass-loader) !*
-
 ---
 ### Development
 En av anledningarna till att webpack först blev populärt var Hot Module Replacement (HMR) i React. Detta gör det möjligt att injecta uppdateringar av komponenter utan att behöva ladda om sidan, vilket är väldigt smidigt när man utvecklar.
