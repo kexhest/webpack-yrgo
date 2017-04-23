@@ -471,11 +471,12 @@ module.exports = {
         NODE_ENV: JSON.stringify(production ? 'production' : 'development'),
       },
     }),
-    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       template: path.join(src, 'templates', 'index.html'),
     }),
-  ].concat(production ? [new ExtractTextPlugin('[contenthash:8].css')] : []),
+  ].concat(production
+    ? [new ExtractTextPlugin('[contenthash:8].css')]
+    : [new webpack.HotModuleReplacementPlugin()]),
 };
 ```
 
