@@ -369,15 +369,15 @@ För att bygga ut vår nuvarande applikation i produktion så måste vi begräns
 
 Vi börjar med att definiera en del environment variabler och lägger till ett script för att tömma vår build mapp. Detta gör vi för att vi ska hasha våra filnamn för att undvika cachning när vi gör uppdateringar och om vi inte clearar vår output mapp när vi bygger så kommer den fyllas upp med filer som vi inte längre använder.
 
-`yarn add rimraf`
+`yarn add rimraf cross-env`
 
 package.json
 ```json
 "scripts": {
-  "start": "NODE_ENV=development node server",
+  "start": "cross-env NODE_ENV=development node server",
   "clean": "rimraf build",
   "prebuild": "npm run clean",
-  "build": "NODE_ENV=production webpack -p"
+  "build": "cross-env NODE_ENV=production webpack -p"
 },
 ```
 
@@ -482,9 +482,16 @@ module.exports = {
 
 Eftersom vår index.js just nu inkluderar en del hotreloading kod så måste vi även uppdatera denna. Vi börjar med att klona index.js och döper de två kopierna till index.dev.js och index.prod.js.
 
+```
+└─┬ src
+  └─┬ scripts
+    ├── index.dev.js (oförändrad från index.js)
+    └── index.prod.js (skal uppdateras för att exkludera hot reloading)
+```
+
 Sen uppdaterar vi entry.js till att inkludera riktig index fil beroende på env variabeln som vi definierade i webpack.DefinePlugin.
 
-entry.js
+src/entry.js
 ```javascript
 if (process.env.NODE_ENV === 'development') {
   require('./scripts/index.dev');
@@ -492,10 +499,9 @@ if (process.env.NODE_ENV === 'development') {
   require('./scripts/index.prod');
 }
 ```
+srx/scripts/index.dev.js (kopia av index.js från dev setupen)
 
-index.dev.js (kopia av index.js från dev setupen)
-
-index.prod.js
+srx/scripts/index.prod.js
 ```javascript
 import React from 'react';
 import { render } from 'react-dom';
@@ -508,6 +514,13 @@ render(<App />, document.getElementById('root'));
 För att göra det ännu tydligare att vi är i produktion kan vi uppdatera vår express server för produktion också. Detta är ingenting vi behöver tänka på så länge vi bygger en statisk html sida, men om vi skulle vilja lägga ut vår lösning på t.ex. heroku med vår server setup är det fint om den startas utan massa dev middlewares.
 
 Skapa en mapp som heter server och flytta in server.js i denna. Döp om server.js till index.js.
+
+```
+└─┬ server
+  ├── index.js
+  ├── server.dev.js
+  └── server.prod.js
+```
 
 Vi lägger till compression som är ett express paket för att gzippa assets.
 
@@ -601,11 +614,11 @@ Till slut uppdaterar vi vår package.json med ett script för att starta servern
 package.json
 ```json
 "scripts": {
-  "start": "NODE_ENV=production node server",
-  "dev": "NODE_ENV=development node server",
+  "start": "cross-env NODE_ENV=production node server",
+  "dev": "cross-env NODE_ENV=development node server",
   "clean": "rimraf build",
   "prebuild": "npm run clean",
-  "build": "NODE_ENV=production webpack -p"
+  "build": "cross-env NODE_ENV=production webpack -p"
 },
 ```
 
@@ -627,11 +640,11 @@ package.json
 ```json
 "scripts": {
   "postinstall": "npm run build",
-  "start": "NODE_ENV=production node server",
-  "dev": "NODE_ENV=development node server",
+  "start": "cross-env NODE_ENV=production node server",
+  "dev": "cross-env NODE_ENV=development node server",
   "clean": "rimraf build",
   "prebuild": "npm run clean",
-  "build": "NODE_ENV=production webpack -p"
+  "build": "cross-env NODE_ENV=production webpack -p"
 },
 ```
 
